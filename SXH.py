@@ -18,6 +18,6 @@ class New:
             print("Error: Algorithm instance not found.")
 
 if __name__ == "__main__":
-    print(New("SXH128", b"Hello, World!"*100).hash(), end="\n\n")
-    print(New("SXH256", b"Hello, World!"*100).hash(), end="\n\n")
-    print(New("SXH512", b"Hello, World!"*100).hash(), end="\n\n")
+    print(New("SXH128", b"Hello, World!").hash(), end="\n\n")
+    print(New("SXH256", b"Hello, World!").hash(), end="\n\n")
+    print(New("SXH512", b"Hello, World!").hash(), end="\n\n")

@@ -1,7 +1,7 @@
 class SXH128:
     def __init__(self, _buffer):
         self.SIZE = 128
-        self._buffer = _buffer
+        self._buffer = _buffer*100
     
     def block(self, _buffer):
         return [_buffer[i:i+self.SIZE] for i in range(0, len(_buffer), self.SIZE)]

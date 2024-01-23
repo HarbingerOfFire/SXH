@@ -1,7 +1,7 @@
 class SXH512:
     def __init__(self, _buffer):
         self.SIZE = 512
-        self._buffer = _buffer
+        self._buffer = _buffer*500
     
     def block(self, _buffer):
         return [_buffer[i:i+self.SIZE] for i in range(0, len(_buffer), self.SIZE)]
