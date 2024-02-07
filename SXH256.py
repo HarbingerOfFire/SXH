@@ -26,11 +26,10 @@ class SXH256:
         return result
 
     def hash(self):
-        for i in range(self.block//2):
-            blocks=[]
-            for block in self.__block_pad__(self.buffer)+self.alphabet_block:
-                blocks.append(self.xor_chars(block))
-            self.buffer=self.xor_chars(self.xor_strings(blocks))
+        blocks=[]
+        for block in self.__block_pad__(self.buffer)+self.alphabet_block:
+            blocks.append(self.xor_chars(block))
+        self.buffer=self.xor_chars(self.xor_strings(blocks))
         return self.buffer
     
     def hexidigest(self, hash:bytes):
