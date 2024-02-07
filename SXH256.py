@@ -8,7 +8,7 @@ class SXH256:
         self.alphabet_block = self.__block_pad__(self.alphabet)
 
     def __block_pad__(self, string:bytes):
-        blocks=[self.buffer[i:i+self.block] for i in range(0, len(self.buffer), self.block)]
+        blocks=[string[i:i+self.block] for i in range(0, len(string), self.block)]
         for i in range(len(blocks)):
             blocks[i]=blocks[i].ljust(self.block, b"0")
         return blocks
