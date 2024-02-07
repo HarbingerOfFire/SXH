@@ -1,38 +1,45 @@
+import string
+
 class SXH128:
-    def __init__(self, _buffer):
-        self.SIZE = 128
-        self._buffer = _buffer*100
+    def __init__(self, buffer:bytes) -> None:
+        self.alphabet = string.printable.encode()
+        self.buffer=(buffer+self.alphabet)*200
+        self.block=128
+        self.alphabet_block = self.__block_pad__(self.alphabet)
+
+    def __block_pad__(self, string:bytes):
+        blocks=[self.buffer[i:i+self.block] for i in range(0, len(self.buffer), self.block)]
+        for i in range(len(blocks)):
+            blocks[i]=blocks[i].ljust(self.block, b"0")
+        return blocks
     
-    def block(self, _buffer):
-        return [_buffer[i:i+self.SIZE] for i in range(0, len(_buffer), self.SIZE)]
-
-    def modulate(self, _buffer: bytes):
-        _new_buffer=b""
-        for byte in _buffer:
-            byte=byte%16
-            _new_buffer+=hex(byte).replace("0x", "").encode()
-        return _new_buffer
-
-    def xor_chars(self, _buffer: bytes):
-        _buffer=self.modulate(_buffer)
-        result = ''
-        for i in range(len(_buffer) - 1):
-            xor_result = _buffer[i] ^ _buffer[i + 1]
-            result += format(xor_result, '01x') 
+    def xor_chars(self, block):
+        result = b''
+        for i in range(len(block)-1):
+            result += bytes([block[i]^block[i+1]])
         return result
     
-    def xor_strings(self, _buffer: list[str]):
-        for i in range(len(_buffer) - 1):
-            xor_result = ""
-            for j in range(self.SIZE):
-                xor_result += hex((int(_buffer[0][j], 16) ^ int(_buffer[i + 1][j], 16)) % 16)[2:]
-            _buffer[0] = xor_result
-        return _buffer[0]
-    
+    def xor_strings(self, string_list):
+        result = string_list[0]
+        for s in string_list[1:]:
+            result = bytes([a^b for a,b in zip(result, s)])
+        return result
+
     def hash(self):
-        blocks=[]
-        for block in self.block(self._buffer):
-            blocks.append(self.xor_chars(block.ljust(self.SIZE, b"\0")))
-        result=self.xor_strings(blocks)        
-        return result
-        
+        for i in range(self.block//2):
+            blocks=[]
+            for block in self.__block_pad__(self.buffer)+self.alphabet_block:
+                blocks.append(self.xor_chars(block))
+            self.buffer=self.xor_chars(self.xor_strings(blocks))
+        return self.buffer
+    
+    def hexidigest(self, hash:bytes):
+        hexidigest=""
+        for byte in hash:
+            hexidigest+=hex(byte%16).removeprefix("0x")
+        return hexidigest
+
+if __name__=='__main__':
+    hash_gen=SXH128(b"b")
+    hash=hash_gen.hash()
+    print(hash_gen.hexidigest(hash))

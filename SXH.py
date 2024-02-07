@@ -17,7 +17,14 @@ class New:
         else:
             print("Error: Algorithm instance not found.")
 
+    def hexdigest(self):
+        if hasattr(self, 'algorithm_instance'):
+            hash_result = self.algorithm_instance.hash()
+            return self.algorithm_instance.hexidigest(hash_result)
+        else:
+            print("Error: Algorithm instance not found.")
+
 if __name__ == "__main__":
-    print(New("SXH128", b"Hello, World!").hash(), end="\n\n")
-    print(New("SXH256", b"Hello, World!").hash(), end="\n\n")
-    print(New("SXH512", b"Hello, World!").hash(), end="\n\n")
+    print(New("SXH128", b"a").hexdigest())
+    print(New("SXH256", b"a").hexdigest())
+    print(New("SXH512", b"a").hexdigest())
